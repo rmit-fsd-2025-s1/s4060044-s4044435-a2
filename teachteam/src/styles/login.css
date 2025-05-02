@@ -1,0 +1,109 @@
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #4a00e0, #8e2de2);
+  color: black;
+}
+
+.login-container {
+  display: flex;
+  background: #fff;
+  width: 800px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  padding: 40px;
+}
+
+.login-left {
+  flex: 1;
+  padding: 40px;
+  text-align: center;
+}
+
+
+.login-right {
+  flex: 1;
+  background: linear-gradient(135deg, #4a00e0, #8e2de2);
+  color: white;
+  padding: 40px;
+  text-align: center;
+  border-radius: 0 20px 20px 0;
+}
+
+
+.input-group {
+  display: flex;
+  align-items: center;
+  background: #f8f8f8;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.icon {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.login-input {
+  border: none;
+  background: none;
+  outline: none;
+  width: 100%;
+  font-size: 1rem;
+}
+
+
+.login-btn {
+  width: 100%;
+  padding: 10px;
+  background: #6a5acd;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.login-btn:hover {
+  background: #5a4ebc;
+}
+
+.login-switch a{
+  color: blue;
+}
+
+.login-switch a:hover{
+  color: purple;
+}
+
+.login-error{
+  color: red;
+}
+
+.welcome-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.welcome-text {
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+    width: 90%;
+    border-radius: 20px;
+  }
+
+  .login-right {
+    border-radius: 0 0 20px 20px;
+  }
+}

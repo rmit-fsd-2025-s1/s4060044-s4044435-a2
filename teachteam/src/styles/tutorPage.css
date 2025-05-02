@@ -1,0 +1,160 @@
+.tutor-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100px;
+  font-family: Arial, sans-serif;
+  background-color: #f4f7fc;
+}
+
+.profile-section {
+  width: 100%;
+  max-width: 800px;
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.profile-section p {
+  font-size: 16px;
+  color: #666;
+}
+
+.personal-details-section {
+  width: 100%;
+  max-width: 800px;
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.personal-details-section h2 {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.input-field {
+  width: 100%;
+  max-width: 500px;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.input-field:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+textarea.input-field {
+  resize: vertical;
+  height: 100px;
+}
+
+.apply-section {
+  width: 100%;
+  max-width: 800px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.apply-section h2 {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.apply-button {
+  padding: 12px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.apply-button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.previous-roles-section {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 40px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.previous-roles-section h2 {
+  font-size: 22px;
+  color: #333;
+}
+
+.previous-roles-section ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.previous-roles-section li {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.previous-roles-section li b {
+  color: #333;
+}
+
+.days-selection {
+  display: flex;
+  justify-content: space-between;
+}
+
+.day-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.day-column label {
+  display: flex;
+  align-items: center;
+}
+
+.day-column input {
+  margin-right: 8px;
+}
