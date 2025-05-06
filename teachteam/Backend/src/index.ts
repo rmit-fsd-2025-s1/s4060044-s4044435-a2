@@ -10,7 +10,7 @@ app.get('/',(req,res)=>{
 AppDataSource.initialize().then(() => {
     console.log("Database Connected");
     app.listen(PORT, () => {
-        console.log(`🚀 Server running at http://localhost:${PORT}`);
+        console.log(`Server running at http://localhost:${PORT}`);
       });
     })
     .catch((error) => {
