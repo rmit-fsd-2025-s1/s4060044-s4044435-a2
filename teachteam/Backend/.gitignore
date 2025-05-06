@@ -1,0 +1,13 @@
+# Ignore dependencies
+node_modules/
+
+# Ignore compiled files
+dist/
+*.js
+*.js.map
+*.tsbuildinfo
+
+# Ignore logs and cache
+npm-debug.log*
+yarn-debug.log*
+.cache/
