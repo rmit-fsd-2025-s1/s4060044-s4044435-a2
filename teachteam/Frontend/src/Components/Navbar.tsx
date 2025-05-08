@@ -1,29 +1,32 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-
+import { jwtDecode } from "jwt-decode";
 // Props or arguments that should be in our user object
 interface User {
   email: string;
-  role: "tutor" | "lecturer";
+  role: "Tutor" | "Lecturer";
 }
 
 export default function Navbar() {
   // Tracking the loggedIn  user and mobile menu state
-  const [user, setUser] = useState({ email: "", role: "" });
+  const [user, setUser] = useState<User | null>(null); // can set user as null now for logout
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
-  // fetching user from local storage
+  // loading user from jwt token in localstorage
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("loggedIn") || "null");
-    setUser(storedUser);
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decode: any = jwtDecode(token);
+      setUser({ email: decode.email, role: decode.role });
+    }
   }, []);
 
   // signOut handler
   const handleSignOut = () => {
-    localStorage.removeItem("loggedIn");
-    setUser({ email: "", role: "" });
+    localStorage.removeItem("token");
+    setUser(null);
     alert("Logged out");
     router.push("/login");
   };
@@ -52,14 +55,16 @@ export default function Navbar() {
             </li>
           )}
           {/*Auth Section*/}
-          {user.email ? (
+          {user ? (
             <>
               <li>
+                <Link href="/profile">Profile</Link>
+              </li>
+              <div>
                 <button onClick={handleSignOut} className="signout-btn">
                   Sign Out
                 </button>
-              </li>
-              <li className="user-email">{user.email}</li>
+              </div>
             </>
           ) : (
             <li>

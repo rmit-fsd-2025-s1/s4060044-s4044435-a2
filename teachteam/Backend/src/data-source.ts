@@ -1,5 +1,13 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
+import { User } from "./entity/User";
+import { Candidate } from "./entity/Candidate";
+import { Lecturer } from "./entity/Lecturer";
+import { Application } from "./entity/Application";
+import { Course } from "./entity/Course";
+import { LecturerCourse } from "./entity/LecturerCourse";
+import { Comment } from "./entity/Comment";
+
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
@@ -10,6 +18,7 @@ export const AppDataSource = new DataSource({
   database: 'S4060044',
   synchronize: true,
   logging: false,
+  entities: [User,Candidate,Lecturer,Application,Course,LecturerCourse,Comment],
   migrations: [],
   subscribers: [],
 });

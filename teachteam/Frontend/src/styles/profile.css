@@ -1,0 +1,74 @@
+.Profile_page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #4a00e0, #8e2de2);
+    color: black;
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  .profile-container {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    width: 500px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: slideUp 0.8s ease;
+  }
+  
+  .profile-title {
+    font-size: 2rem;
+    color: #4a00e0;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .profile-field {
+    background: #f8f8f8;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+    font-size: 1.1rem;
+    color: #333;
+    transition: transform 0.2s ease;
+  }
+  
+  .profile-field:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .profile-container {
+      width: 90%;
+      padding: 30px;
+    }
+  }
+  

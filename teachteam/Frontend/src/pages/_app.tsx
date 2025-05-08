@@ -7,6 +7,7 @@ import "../styles/signup.css";
 import "../styles/splash.css";
 import "../styles/lecturer.css";
 import "../styles/Piechart.css";
+import "../styles/profile.css";
 
 import type { AppProps } from "next/app";
 import "../styles/tutorPage.css";

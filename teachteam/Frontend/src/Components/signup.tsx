@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+import axios from "axios";
 
 //state hooks
 export default function SignupForm() {
+  const [name,setName] = useState("");
   const [email, setEmail] = useState("");//email field
   const [password, setPassword] = useState("");//password field
   const [confirmPassword, setConfirmPassword] = useState("");//confirm password
@@ -11,8 +13,8 @@ export default function SignupForm() {
   const router = useRouter();
  
   // ensures field are filled
-  const handleSignup = () => {
-    if (!email || !password || !confirmPassword || !role) {
+  const handleSignup = async () => {
+    if (!name ||!email || !password || !confirmPassword || !role) {
       setError("All fields are required.");
       return;
     }
@@ -37,22 +39,26 @@ export default function SignupForm() {
       setError("Passwords do not match.");
       return;
     }
-    // retrive existing users from local storage and passes them to array
-    const users: { email: string; password: string; role: string }[] = JSON.parse(
-      localStorage.getItem("users") || "[]"
-    );
 
-    //checks for user if it is registered
-    if (users.some((user) => user.email === email)) {
-      setError("User already exists.");
-      return;
+    // Will be saving our data to cloud mySql
+    try{
+      await axios.post("http://localhost:5050/signup",{
+        name,
+        email,
+        password,
+        role
+      })
+
+      alert("Signup successful!");
+      router.push("/login")
+    } // Error handling
+    catch (err: any) {
+      console.error("Signup failed:", err);
+      console.log("Full Axios response:", err.response);
+      setError(err.response?.data?.error || "Signup failed");
     }
-    //saves user and give a message "Signup Successful"
-    users.push({ email, password, role });
-    localStorage.setItem("users", JSON.stringify(users));
-    alert("Signup Successful!");
-    router.push("/login");
-  };
+    
+  }
 
   // structure for entering signup details like email and  password
   return (
@@ -61,6 +67,17 @@ export default function SignupForm() {
         <p className="signup-subtitle">
           <b>Create your account</b>
         </p>
+        {/* NAME FIELD  Newly Added*/}
+        <div className="input-group">
+          <span className="icon">👤</span>
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="signup-input"
+          />
+        </div>
         <div className="input-group">
           <span className="icon">📧</span>
           <input
