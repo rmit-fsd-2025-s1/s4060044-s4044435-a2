@@ -28,4 +28,7 @@ export class Comment {
 
   @Column({ type: "int" })
   rank: number | undefined;
+
+  @Column({type: "boolean", default: false})
+  selected: boolean| undefined
 }

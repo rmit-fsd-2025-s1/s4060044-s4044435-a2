@@ -16,7 +16,7 @@ export default function Navbar() {
 
   // loading user from jwt token in localstorage
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (token) {
       const decode: any = jwtDecode(token);
       setUser({ email: decode.email, role: decode.role });
@@ -25,7 +25,7 @@ export default function Navbar() {
 
   // signOut handler
   const handleSignOut = () => {
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     setUser(null);
     alert("Logged out");
     router.push("/login");

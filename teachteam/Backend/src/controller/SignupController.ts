@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
+import { Candidate } from "../entity/Candidate";
 import bcrypt from "bcryptjs"
+import { Lecturer } from "../entity/Lecturer";
 
 export const signUp  = async(req:Request,res:Response): Promise<any> => {
     const {name,email,password,role} = req.body
@@ -31,6 +33,18 @@ export const signUp  = async(req:Request,res:Response): Promise<any> => {
   });
 
   const saved = await userRepo.save(user);
+  
+  // Adding the id's in candiadate and lecturer tables according to the roles
+   if (role.toLowerCase() === "tutor" || role.toLowerCase() === "candidate") {
+    const candidateRepo = AppDataSource.getRepository(Candidate);
+    const candidate = candidateRepo.create({ candidateId: saved.userId });
+    await candidateRepo.save(candidate);
+  } else if (role.toLowerCase() === "lecturer") {
+    const lecturerRepo = AppDataSource.getRepository(Lecturer);
+    const lecturer = lecturerRepo.create({ lecturerId: saved.userId });
+    await lecturerRepo.save(lecturer);
+  }
+
   return res.status(201).json(saved);
 };
 

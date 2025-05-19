@@ -16,7 +16,7 @@ export default function Profile() {
 
   // Fetching data from token in local storage
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (!token) {
       alert("You Must login to view this page");
       router.push("/login");
@@ -36,8 +36,8 @@ export default function Profile() {
       // catching error if someone try to access /profile without login
     } catch (err) {
       console.error("Invalid token", err);
-     // removing token from local storage
-      localStorage.removeItem("token");
+     // removing token from session storage
+      sessionStorage.removeItem("token");
       router.push("/login");
     }
   }, []);

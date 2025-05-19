@@ -3,6 +3,7 @@ import cors from "cors";
 import { AppDataSource } from './data-source';
 import signUpRoutes from "./routes/signup.routes";
 import loginRoutes from "./routes/login.routes"
+import lecturerRoutes from "./routes/lecturer.routes";
 const app  = express();
 const PORT = 5050;
 app.use(cors())
@@ -13,6 +14,9 @@ app.get('/',(req,res)=>{
 // const cors = require('cors')
 app.use("/signup", signUpRoutes)
 app.use("/login",loginRoutes)
+
+app.use(lecturerRoutes);
+
 
 AppDataSource.initialize().then(() => {
     console.log("Database Connected");

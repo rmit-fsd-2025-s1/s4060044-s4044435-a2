@@ -24,14 +24,18 @@ export default function LoginForm() {
         password
       })
       const user = res.data.user;
-      const token = res.data.token
+      const token = res.data.token;
       
     if(!user || !token){
       SetError("Login failed: user not found")
       return;
     }
     // Assigning the token created which will be created in login controller uopn successfull login
-      localStorage.setItem("token",token);
+    // Using sessionStorage because using local storage token will be still there even if we open a new tab
+    //without asking login it will work and won't fetch data properly
+    // Now need to login everytime while on a new tab
+    // More safer and better then local storage
+      sessionStorage.setItem("token",token);
       alert(`Welcome ${user.name}`);
       router.push("/home");
       // Catch Block for proper error handling
@@ -91,4 +95,3 @@ export default function LoginForm() {
     </div>
   );
 }
-

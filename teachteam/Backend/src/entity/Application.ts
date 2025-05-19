@@ -29,4 +29,8 @@ export class Application {
 
   @Column({ type: "text" })
   academicCredentials: string | undefined;
+
+  @Column({type: "text"})
+  prevWork: string| undefined
 }
+

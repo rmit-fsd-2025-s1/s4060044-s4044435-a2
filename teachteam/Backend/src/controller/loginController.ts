@@ -29,7 +29,7 @@ if (!user) {
 
   // Creating JWT token for frontend to authenticate user for further requests
   const token = jwt.sign(
-    {email:user.email, role: user.role ,password: user.password, joinedAt:user.joinedAt,name:user.name}, // Payload
+    {email:user.email, role: user.role ,password: user.password, joinedAt:user.joinedAt,name:user.name,id: user.userId}, // Payload
     "secretkey123", // secret key
     {expiresIn: "1h"} // Token options
   )
