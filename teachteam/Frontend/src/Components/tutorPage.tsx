@@ -1,172 +1,130 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
+import axios from "axios";
 
-// interface for course, application and user
 interface Course {
-  code: string;
-  name: string;
-}
-
-interface Application {
-  fname: string;
-  lname: string;
-  phone: string;
   courseCode: string;
-  availability: string;
-  skills: string;
-  academicCredentials: string;
-  availableDays: string[];
-}
-
-interface User {
-  name: string;
-  email: string;
-  role: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
+  courseName: string;
 }
 
 const TutorPage = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [courses, setCourses] = useState<Course[]>([]); // holds course list
-  const [selectedCourse, setSelectedCourse] = useState<string>(""); // stores selected course
-  const [availability, setAvailability] = useState<string>(""); // Stores availability
-  const [availableDays, setAvailableDays] = useState<string[]>([]); // available days
-  const [skills, setSkills] = useState<string>(""); // store entered skills
-  const [academicCredentials, setAcademicCredentials] = useState<string>(""); // changed from previousWorkExperience
-  const [firstName, setFirstName] = useState<string>(""); // store first name
-  const [lastName, setLastName] = useState<string>(""); // stores last name
-  const [phoneNumber, setPhoneNumber] = useState<string>(""); //store phone number
+  const [user, setUser] = useState<any>(null);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<string>("");
+  const [roleType, setRoleType] = useState<string>("");
+  const [availability, setAvailability] = useState<string>("");
+  const [availableDays, setAvailableDays] = useState<string[]>([]);
+  const [skills, setSkills] = useState<string>("");
+  const [academicCredentials, setAcademicCredentials] = useState<string>("");
+  const [prevWork, setPrevWork] = useState<string>("");
   const [error, setError] = useState<string>("");
   const router = useRouter();
 
-  // it takes current user from local storage and check weather user exists
   useEffect(() => {
-    const currentUser = JSON.parse(localStorage.getItem("loggedIn") || "null");
-    if (!currentUser || currentUser.role !== "Tutor") {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in.");
       router.push("/login");
       return;
     }
-    setUser(currentUser);
-    //list of courses
-    setCourses([
-      { code: "COSC2758", name: "Full Stack Development" },
-      { code: "COSC2801", name: "Programming bootcamp 1" },
-      { code: "COSC2802", name: "Programming bootcamp 2" },
-      { code: "COSC2803", name: "Programming Studio 1" },
-      { code: "COSC2804", name: "Programming Studio 2" },
-      { code: "MATH2466", name: "Introduction to Mathematics for computing" },
-      { code: "COSC1002", name: "Database Systems" },
-      { code: "ISY3413", name: "Software Engineering Fundamentals" },
-      { code: "INTE2625", name: "Introduction to Cyber Security" },
-    ]);
+
+    const fetchCourses = async () => {
+      try {
+        const res = await axios.get("http://localhost:5050/candidate", {
+          headers: { Authorization: `Bearer ${token}` }
+
+
+        });
+        setUser({ name: res.data.name });
+        setCourses(res.data.courses);
+      } catch (err) {
+        console.error("Failed to fetch courses:", err);
+        setError("Unable to fetch course list");
+      }
+    };
+
+    fetchCourses();
   }, [router]);
 
-  // toggle selected day in array, add if not selected and remove if it already exists
   const handleDaySelection = (day: string) => {
     setAvailableDays((prev) =>
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
     );
   };
 
-  const handleSubmit = () => {
-    // checks for all fields and prevent from submitting application
-    if (
-      !firstName ||
-      !lastName ||
-      !phoneNumber ||
-      !selectedCourse ||
-      !availability ||
-      !skills ||
-      !academicCredentials ||
-      !availableDays.length
-    ) {
+  const handleSubmit = async () => {
+    if (!roleType || !selectedCourse || !availability || !skills || !academicCredentials || !availableDays.length) {
       setError("All fields are required.");
       return;
     }
 
-    // creating a application data with all tutor input values
-    const applicationData: Application = {
-      fname: firstName,
-      lname: lastName,
-      phone: phoneNumber,
-      courseCode: selectedCourse,
-      availability,
-      skills,
-      academicCredentials,
-      availableDays,
-    };
+    const token = sessionStorage.getItem("token");
+    try {
+      console.log("Token before POST:", token);
+      await axios.post(
+        "http://localhost:5050/candidate",
+        {
+          roleType,
+          availability,
+          skills,
+          academicCredentials,
+          prevWork,
+          courseCode: selectedCourse,
+        },
+        {
+          headers: {
+  Authorization: `Bearer ${token}`,
+},
 
-    // it saves application, add the new one and show a message "Application submitted successfully!"
-    let userApplications = JSON.parse(localStorage.getItem("userApplications") || "[]");
-    userApplications.push(applicationData);
-    localStorage.setItem("userApplications", JSON.stringify(userApplications));
+        }
+      );
 
-    alert("Application submitted successfully!");
+      alert("Application submitted successfully!");
+      setSelectedCourse("");
+      setRoleType("");
+      setAvailability("");
+      setAvailableDays([]);
+      setSkills("");
+      setAcademicCredentials("");
+      setPrevWork("");
+      setError("");
+    } catch (err: any) {
+      console.error("Axios error:", err);
+      if (err.response) {
+        console.error("Backend error:", err.response.data);
+        setError(err.response.data.error || "Application failed");
+      } else {
+        setError("Application failed due to network error");
+      }
+    }
   };
 
   return (
-    // display tutor page layout
     <div className="tutor-page-container">
       <Navbar />
-      {/* profile section showing the users email and role */}
       <div className="profile-section">
         <h1>Tutor Page</h1>
-        <p>Email: {user?.email}</p>
-        <p>Role: {user?.role}</p>
-      </div>
-
-      <div className="personal-details-section">
-        <h2>Personal Details</h2>
-        <div className="input-group">
-          <label>First Name:</label>
-          <input
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="input-field"
-            placeholder="Enter First Name"
-          />
-        </div>
-        {/* Displays an input field for the tutor */}
-        <div className="input-group">
-          <label>Last Name:</label>
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="input-field"
-            placeholder="Enter Last Name"
-          />
-        </div>
-
-        <div className="input-group">
-          <label>Phone Number:</label>
-          <input
-            type="text"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            className="input-field"
-            placeholder="Enter Phone Number"
-          />
-        </div>
-        {/* display read only email */}
-        <div className="input-group">
-          <label>Email Address:</label>
-          <input
-            type="email"
-            value={user?.email || ""}
-            readOnly
-            className="input-field"
-          />
-        </div>
+        <p>Name: {user?.name}</p>
+        <p>Role: Tutor</p>
       </div>
 
       <div className="apply-section">
-        <h2>Apply for Tutor or Lab-Assistant Roles</h2>
-        {/* display a dropdown for choosing a course */}
+        <h2>Apply for Tutor or Lab Assistant Roles</h2>
+
+        <div className="input-group">
+          <label>Role Type:</label>
+          <select
+            value={roleType}
+            onChange={(e) => setRoleType(e.target.value)}
+            className="input-field"
+          >
+            <option value="">Select Role</option>
+            <option value="Tutor">Tutor</option>
+            <option value="Lab Assistant">Lab Assistant</option>
+          </select>
+        </div>
+
         <div className="input-group">
           <label>Select Course:</label>
           <select
@@ -176,13 +134,13 @@ const TutorPage = () => {
           >
             <option value="">Select a Course</option>
             {courses.map((course) => (
-              <option key={course.code} value={course.code}>
-                {course.code} - {course.name}
+              <option key={course.courseCode} value={course.courseCode}>
+                {course.courseCode} - {course.courseName}
               </option>
             ))}
           </select>
         </div>
-        {/* dropdown for the tutor to select availabilty */}
+
         <div className="input-group">
           <label>Availability:</label>
           <select
@@ -197,7 +155,7 @@ const TutorPage = () => {
             <option value="Contract">Contract</option>
           </select>
         </div>
-        {/* Display checkboxes and allows tutor to select multiple available days of week */}
+
         <div className="input-group">
           <label>Available Days:</label>
           <div className="days-selection">
@@ -216,7 +174,7 @@ const TutorPage = () => {
             )}
           </div>
         </div>
-        {/* allows user to enter their skills */}
+
         <div className="input-group">
           <label>Skills:</label>
           <textarea
@@ -226,7 +184,7 @@ const TutorPage = () => {
             className="input-field"
           />
         </div>
-        {/* changed from previous work experience to academic credentials */}
+
         <div className="input-group">
           <label>Academic Credentials:</label>
           <textarea
@@ -236,11 +194,21 @@ const TutorPage = () => {
             className="input-field"
           />
         </div>
-        {/* submit button */}
+
+        <div className="input-group">
+          <label>Previous Work Experience:</label>
+          <textarea
+            value={prevWork}
+            onChange={(e) => setPrevWork(e.target.value)}
+            placeholder="Enter previous work"
+            className="input-field"
+          />
+        </div>
+
         <button onClick={handleSubmit} className="apply-button">
           Apply
         </button>
-        {/* display error message */}
+
         {error && <p className="error-message">{error}</p>}
       </div>
     </div>
