@@ -42,6 +42,7 @@
     const [searchName, setSearchName] = useState("");
     const [searchAvailability, setSearchAvailability] = useState("");
     const [searchSkills, setSearchSkills] = useState("");
+    const [searchSessionType, setSearchSessionType] = useState(""); // NEW STATE for session type
     const [domLoaded, setDomLoaded] = useState(false); //Hydration issue i.e server side render doesn't match the client side render
     const router = useRouter();
 
@@ -288,26 +289,18 @@
                   className="input-field"
                 />
               </div>
-              {/* <div className="input-group">
-              <label>Days Available:</label>
-              <select
-                multiple
-                value={selectedDays}
-                onChange={(e) => {
-                  const selected = Array.from(e.target.selectedOptions, (option) => option.value);
-                  setSelectedDays(selected);
-                }}
-                className="input-field"
-              >
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <option value="Wednesday">Wednesday</option>
-                <option value="Thursday">Thursday</option>
-                <option value="Friday">Friday</option>
-                <option value="Saturday">Saturday</option>
-                <option value="Sunday">Sunday</option>
-              </select>
-            </div> */}
+              <div className="input-group">
+                <label>Type of Session:</label>
+                <select
+                  value={searchSessionType}
+                  onChange={(e) => setSearchSessionType(e.target.value)}
+                  className="input-field"
+                  >
+                    <option value="">All</option>
+                    <option value="Tutor">Tutor</option>
+                    <option value="Lab Assistant">Lab Assistant</option>
+                    </select>
+                    </div>
             </div>
           </div>
 
@@ -321,24 +314,9 @@
                     .toLowerCase()
                     .includes(searchName.toLowerCase())
                 )
-                // Commenting out right now
-                // .filter((applicant) =>
-                //   applicant.availability
-                //     .toLowerCase()
-                //     .includes(searchAvailability.toLowerCase())
-                // )
-                // .filter((applicant) =>
-                //   applicant.skills
-                //     .toLowerCase()
-                //     .includes(searchSkills.toLowerCase())
-                // )
-                // .filter(
-                //   (applicant) =>
-                //     selectedDays.length === 0 ||
-                //     selectedDays.every((day) =>
-                //       applicant.availableDays.includes(day)
-                //     )
-                // )
+                  .filter((applicant) =>
+                  searchSessionType === "" || applicant.roleType === searchSessionType
+              )
                 .map((applicant, index) => (
                   <div key={index} className="applicant-card">
                     {/* Displaying applicant's details */}
