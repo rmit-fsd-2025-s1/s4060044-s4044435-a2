@@ -1,0 +1,22 @@
+.splash-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to bottom right, #a8e6a8, #f0f9f0);
+  color: #2d5a3d;
+  font-size: 2rem;
+  font-weight: bold;
+  animation: fadeOut 2s ease-in-out forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
