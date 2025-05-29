@@ -28,5 +28,4 @@ joinedAt: Date | undefined;
 isBlocked: boolean | undefined;
 
 
-
 }
