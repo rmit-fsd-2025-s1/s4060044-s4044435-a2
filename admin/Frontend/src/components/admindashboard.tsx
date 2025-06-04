@@ -1,4 +1,12 @@
-export default function AdminDashboardComponent({ assignLecturer, blockCandidate, editCourse }) {
+// components/admindashboard.tsx
+import dynamic from "next/dynamic";
+
+// Dynamically import the subcomponents to avoid SSR issues if needed
+const CourseManager = dynamic(() => import("../components/CourseManager"));
+const LecturerAssignment = dynamic(() => import("../components/LecturerAssignment"));
+const CandidateManager = dynamic(() => import("../components/CandidateManager"));
+
+export default function AdminDashboardComponent() {
   return (
     <div className="dashboard-container">
       <div className="dashboard-card">
@@ -9,23 +17,17 @@ export default function AdminDashboardComponent({ assignLecturer, blockCandidate
 
         <div className="dashboard-section">
           <h3 className="section-title">📘 Course Management</h3>
-          <button className="dashboa rd-btn" onClick={editCourse}>
-            ➕ Add / ✏️ Edit / ❌ Delete Course
-          </button>
+          <CourseManager />
         </div>
 
         <div className="dashboard-section">
           <h3 className="section-title">🧑‍🏫 Assign Lecturer</h3>
-          <button className="dashboard-btn" onClick={assignLecturer}>
-            🔁 Assign Lecturer to Course
-          </button>
+          <LecturerAssignment />
         </div>
 
         <div className="dashboard-section">
           <h3 className="section-title">🚫 Candidate Control</h3>
-          <button className="dashboard-btn" onClick={blockCandidate}>
-            Toggle Block / Unblock Candidate
-          </button>
+          <CandidateManager />
         </div>
       </div>
     </div>
