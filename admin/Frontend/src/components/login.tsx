@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 
 export default function LoginForm() {
@@ -21,7 +21,7 @@ const personImg = "/images/bgo.png"
 
     if (username === "admin" && password === "admin") {
       sessionStorage.setItem("adminAuth", "true");
-      router.push("/admin-dashboard");
+      router.push("/admindashboard");
     } else {
     // Setting the states to empty if wrong
       setUsername("");
