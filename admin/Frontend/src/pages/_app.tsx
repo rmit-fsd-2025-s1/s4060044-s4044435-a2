@@ -1,5 +1,7 @@
 import "@/styles/admindashboard.css";
+import "@/styles/course-manager.css";
 import "@/styles/globals.css";
+import "@/styles/lecturer-assignment.css";
 import "@/styles/Login.css";
 import "@/styles/splash.css";
 

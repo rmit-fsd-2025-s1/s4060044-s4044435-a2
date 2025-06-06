@@ -46,13 +46,16 @@ export default function CandidateManager() {
   };
 
   return (
-    <div>
+    <div className="course-container">
       <h3>Candidate Access Manager</h3>
-      <ul>
+      <ul className="course-list">
         {data?.candidatesWithManySelections.map((c: any) => (
           <li key={c.candidateId}>
             {c.user.name} ({c.user.email}) — {c.user.isBlocked ? "Blocked" : "Active"}
-            <button onClick={() => toggleBlock(c.candidateId, c.user.isBlocked)}>
+            <button
+              className={`dashboard-btn ${c.user.isBlocked ? "blue" : "red"}`}
+              onClick={() => toggleBlock(c.candidateId, c.user.isBlocked)}
+            >
               {c.user.isBlocked ? "Unblock" : "Block"}
             </button>
           </li>
