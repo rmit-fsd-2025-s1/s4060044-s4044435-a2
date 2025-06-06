@@ -1,3 +1,4 @@
+import Image from "next/image"
 // Defining the props that our card component will accept
 interface CardProps {
   title: string;
@@ -10,7 +11,7 @@ const Cards = ({ title, description, imageSrc }: CardProps) => {
   return (
     <div className="card">
       {/*Card image */}
-      <img src={imageSrc} alt={title} className="card-image" />
+      <Image src={imageSrc} alt={title} className="card-image" />
       {/* Text content: title and description */}
       <div className="card-content">
         <h3 className="card-title">{title}</h3>

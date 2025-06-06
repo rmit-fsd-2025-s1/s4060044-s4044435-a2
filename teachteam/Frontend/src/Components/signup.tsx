@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import Link from "next/link";
 
 //state hooks
 export default function SignupForm() {
@@ -52,10 +53,11 @@ export default function SignupForm() {
       alert("Signup successful!");
       router.push("/login")
     } // Error handling
-    catch (err: any) {
-      console.error("Signup failed:", err);
-      console.log("Full Axios response:", err.response);
-      setError(err.response?.data?.error || "Signup failed");
+    catch (err) {
+      const error = err as AxiosError;
+      console.error("Signup failed:", error);
+      console.log("Full Axios response:", error.response);
+      setError((error.response?.data as { error?: string })?.error || "Signup failed");
     }
     
   }
@@ -128,7 +130,7 @@ export default function SignupForm() {
         {/* shows error message */}
         {error && <p className="signup-error">{error}</p>}
         <p className="signup-switch">
-          Already have an account? <a href="/login">Login</a>
+          Already have an account? <Link href="/login">Login</Link>
         </p>
       </div>
       {/* welcome message for right side */}

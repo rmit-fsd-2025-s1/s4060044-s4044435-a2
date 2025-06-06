@@ -1,11 +1,9 @@
 //Using recharts for this Pie Chart Component
-import React, { PureComponent } from "react";
+import React from "react";
 import {
   PieChart,
   Pie,
-  Sector,
   Cell,
-  ResponsiveContainer,
   Tooltip,
   Label,
 } from "recharts";

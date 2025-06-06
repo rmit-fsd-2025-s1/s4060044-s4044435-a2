@@ -1,4 +1,4 @@
-import Link from 'next/link';
+
 import Navbar from "../Components/Navbar";
 import Cards from '@/Components/Cards';
 
@@ -13,7 +13,7 @@ const tutorImg = "/images/tutor.jpg"
       <header className="homepage-header">
         <h1>Welcome to the TeachTeam</h1>
         <p>
-          This platform connects tutors and lecturers, allowing them to collaborate, manage tutor applications, and facilitate a productive learning environment. Whether you're a tutor looking for students or a lecturer needing to review tutor applications, this app is designed to make the process seamless.
+          This platform connects tutors and lecturers, allowing them to collaborate, manage tutor applications, and facilitate a productive learning environment. Whether you&apos;re a tutor looking for students or a lecturer needing to review tutor applications, this app is designed to make the process seamless.
         </p>
       </header>
       <div className='cards-container'>

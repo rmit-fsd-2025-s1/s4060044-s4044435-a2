@@ -1,26 +1,33 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
+// Course type structure
 interface Course {
   courseCode: string;
   courseName: string;
 }
 
+// Logged in user type structure
+interface User {
+  name: string;
+}
+
 const TutorPage = () => {
-  const [user, setUser] = useState<any>(null);
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<string>("");
-  const [roleType, setRoleType] = useState<string>("");
-  const [availability, setAvailability] = useState<string>("");
-  const [availableDays, setAvailableDays] = useState<string[]>([]);
-  const [skills, setSkills] = useState<string>("");
-  const [academicCredentials, setAcademicCredentials] = useState<string>("");
-  const [prevWork, setPrevWork] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [user, setUser] = useState<User | null>(null); // current user
+  const [courses, setCourses] = useState<Course[]>([]); // available courses
+  const [selectedCourse, setSelectedCourse] = useState<string>(""); // selected course
+  const [roleType, setRoleType] = useState<string>(""); // tutor or lab assistant
+  const [availability, setAvailability] = useState<string>(""); // availability type
+  const [availableDays, setAvailableDays] = useState<string[]>([]); // selected days
+  const [skills, setSkills] = useState<string>(""); // skill input
+  const [academicCredentials, setAcademicCredentials] = useState<string>(""); // academic info
+  const [prevWork, setPrevWork] = useState<string>(""); // previous work experience
+  const [error, setError] = useState<string>(""); // error message
   const router = useRouter();
 
+  // on component load
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (!token) {
@@ -29,12 +36,11 @@ const TutorPage = () => {
       return;
     }
 
+    // fetch courses from backend
     const fetchCourses = async () => {
       try {
         const res = await axios.get("http://localhost:5050/candidate", {
           headers: { Authorization: `Bearer ${token}` }
-
-
         });
         setUser({ name: res.data.name });
         setCourses(res.data.courses);
@@ -47,12 +53,14 @@ const TutorPage = () => {
     fetchCourses();
   }, [router]);
 
+  // toggle day selection
   const handleDaySelection = (day: string) => {
     setAvailableDays((prev) =>
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
     );
   };
 
+  // form submit handler
   const handleSubmit = async () => {
     if (!roleType || !selectedCourse || !availability || !skills || !academicCredentials || !availableDays.length) {
       setError("All fields are required.");
@@ -74,9 +82,8 @@ const TutorPage = () => {
         },
         {
           headers: {
-  Authorization: `Bearer ${token}`,
-},
-
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -89,11 +96,12 @@ const TutorPage = () => {
       setAcademicCredentials("");
       setPrevWork("");
       setError("");
-    } catch (err: any) {
-      console.error("Axios error:", err);
-      if (err.response) {
-        console.error("Backend error:", err.response.data);
-        setError(err.response.data.error || "Application failed");
+    } catch (err) {
+      const error = err as AxiosError;
+      console.error("Axios error:", error);
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Backend error:", error.response.data);
+        setError((error.response.data as { error?: string })?.error || "Application failed");
       } else {
         setError("Application failed due to network error");
       }
@@ -103,15 +111,18 @@ const TutorPage = () => {
   return (
     <div className="tutor-page-container">
       <Navbar />
+      {/* user profile section */}
       <div className="profile-section">
         <h1>Tutor Page</h1>
         <p>Name: {user?.name}</p>
         <p>Role: Tutor</p>
       </div>
 
+      {/* application form section */}
       <div className="apply-section">
         <h2>Apply for Tutor or Lab Assistant Roles</h2>
 
+        {/* role type */}
         <div className="input-group">
           <label>Role Type:</label>
           <select
@@ -125,6 +136,7 @@ const TutorPage = () => {
           </select>
         </div>
 
+        {/* course selection */}
         <div className="input-group">
           <label>Select Course:</label>
           <select
@@ -141,6 +153,7 @@ const TutorPage = () => {
           </select>
         </div>
 
+        {/* availability */}
         <div className="input-group">
           <label>Availability:</label>
           <select
@@ -156,6 +169,7 @@ const TutorPage = () => {
           </select>
         </div>
 
+        {/* available days */}
         <div className="input-group">
           <label>Available Days:</label>
           <div className="days-selection">
@@ -175,6 +189,7 @@ const TutorPage = () => {
           </div>
         </div>
 
+        {/* skills */}
         <div className="input-group">
           <label>Skills:</label>
           <textarea
@@ -185,6 +200,7 @@ const TutorPage = () => {
           />
         </div>
 
+        {/* academic credentials */}
         <div className="input-group">
           <label>Academic Credentials:</label>
           <textarea
@@ -195,6 +211,7 @@ const TutorPage = () => {
           />
         </div>
 
+        {/* previous work */}
         <div className="input-group">
           <label>Previous Work Experience:</label>
           <textarea
@@ -205,10 +222,12 @@ const TutorPage = () => {
           />
         </div>
 
+        {/* submit button */}
         <button onClick={handleSubmit} className="apply-button">
           Apply
         </button>
 
+        {/* error message */}
         {error && <p className="error-message">{error}</p>}
       </div>
     </div>

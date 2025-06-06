@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent} from "@testing-library/react";
 import LecturerPage from "../pages/lecturers";
 import "@testing-library/jest-dom";
 import { useRouter } from "next/router";

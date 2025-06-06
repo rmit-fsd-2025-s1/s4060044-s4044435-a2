@@ -2,8 +2,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { jwtDecode } from "jwt-decode";
+
 // Props or arguments that should be in our user object
 interface User {
+  email: string;
+  role: "Tutor" | "Lecturer";
+}
+
+interface DecodedToken {
   email: string;
   role: "Tutor" | "Lecturer";
 }
@@ -18,7 +24,7 @@ export default function Navbar() {
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
-      const decode: any = jwtDecode(token);
+      const decode = jwtDecode<DecodedToken>(token);
       setUser({ email: decode.email, role: decode.role });
     }
   }, []);

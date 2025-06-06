@@ -4,6 +4,19 @@ import LecturerPage from "../pages/lecturers";
 import "@testing-library/jest-dom";
 import { useRouter } from "next/router";
 
+interface Applicant {
+  fname: string;
+  lname: string;
+  phone: string;
+  courseCode: string;
+  availability: string;
+  skills: string;
+  previousWorkExperience: string;
+  availableDays: string[];
+  selected: boolean;
+}
+
+
 // Mocking next/router to prevent actual navigation
 jest.mock("next/router", () => ({
   useRouter: jest.fn(),
@@ -76,12 +89,12 @@ test("selects an applicant and updates localStorage", async () => {
 
   // Check that localStorage was updated with `selected: true`
   await waitFor(() => {
-    const updatedApplicants = JSON.parse(
-      localStorage.getItem("userApplications") || "[]"
-    );
-    const updated = updatedApplicants.find(
-      (a: any) => a.fname === "Harshit" && a.lname === "Arora"
-    );
-    expect(updated.selected).toBe(true);
+    const updatedApplicants: Applicant[] = JSON.parse(localStorage.getItem("userApplications") || "[]");
+
+   const updated = updatedApplicants.find(
+  (a) => a.fname === "Harshit" && a.lname === "Arora"
+);
+
+    expect(updated!.selected).toBe(true);
   });
 });

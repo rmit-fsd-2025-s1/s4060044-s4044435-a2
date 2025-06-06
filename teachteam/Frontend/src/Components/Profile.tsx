@@ -2,12 +2,19 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/router";
 
-// Creating an User interface
+// Creating a User interface
 interface User {
-  name: String;
-  email: String;
-  role: String;
+  name: string;
+  email: string;
+  role: string;
   joinedAt: Date;
+}
+
+interface DecodedToken {
+  name: string;
+  email: string;
+  role: string;
+  joinedAt: string; // token stores date as string
 }
 
 export default function Profile() {
@@ -24,35 +31,41 @@ export default function Profile() {
     }
 
     try {
-        // decoding the token and retrieving the data of my User
-      const decoded: any = jwtDecode(token);
-      
+      // decoding the token and retrieving the data of my User
+      const decoded = jwtDecode<DecodedToken>(token);
+
       setUser({
         name: decoded.name,
         email: decoded.email,
         role: decoded.role,
-        joinedAt: decoded.joinedAt
+        joinedAt: new Date(decoded.joinedAt),
       });
-      // catching error if someone try to access /profile without login
     } catch (err) {
       console.error("Invalid token", err);
-     // removing token from session storage
       sessionStorage.removeItem("token");
       router.push("/login");
     }
-  }, []);
-// if no user return null {just for an edge case validation has already been done in backend} else return the details
-if(!user) {
-    return null
-} else{
+  }, [router]);
+
+  if (!user) {
+    return null;
+  } else {
     return (
-    <div className="profile-container">
-      <h2 className="profile-title">👤 Profile</h2>
-      <div className="profile-field">Name: <b>{user.name}</b></div>
-      <div className="profile-field">Email: <b>{user.email}</b></div>
-      <div className="profile-field">Role: <b>{user.role}</b></div>
-      <div className = "profile-field">Date Joined: <b>{new Date(user.joinedAt).toLocaleDateString()}</b></div>
-    </div>
-  );
-}
+      <div className="profile-container">
+        <h2 className="profile-title">👤 Profile</h2>
+        <div className="profile-field">
+          Name: <b>{user.name}</b>
+        </div>
+        <div className="profile-field">
+          Email: <b>{user.email}</b>
+        </div>
+        <div className="profile-field">
+          Role: <b>{user.role}</b>
+        </div>
+        <div className="profile-field">
+          Date Joined: <b>{user.joinedAt.toLocaleDateString()}</b>
+        </div>
+      </div>
+    );
+  }
 }
