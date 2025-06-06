@@ -6,9 +6,19 @@ const CourseManager = dynamic(() => import("../components/CourseManager"));
 const LecturerAssignment = dynamic(() => import("../components/LecturerAssignment"));
 const CandidateManager = dynamic(() => import("../components/CandidateManager"));
 
-export default function AdminDashboardComponent() {
+interface AdminDashboardProps {
+  assignLecturer: () => void;
+  editCourse: () => void;
+  blockCandidate: () => void;
+}
+
+export default function AdminDashboardComponent({
+  assignLecturer,
+  editCourse,
+  blockCandidate,
+}: AdminDashboardProps) {
   return (
-    <div className="dashboard-container">
+      <div className="dashboard-container">
       <div className="dashboard-card">
         <div className="dashboard-header">
           <h2 className="dashboard-title">Welcome, Admin</h2>
