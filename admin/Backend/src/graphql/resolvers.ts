@@ -16,12 +16,20 @@ const userRepo = AppDataSource.getRepository(User);
 
 export const resolvers = {
   Query: {
+
+    
     /**
      * Fetch all available courses from the system.
      * Returns an array of course objects with their code and name.
      */
     allCourses: async () => {
       return await courseRepo.find();
+    },
+
+    // fetch all available lecturers
+
+    allLecturers: async () => {
+    return await lecturerRepo.find({ relations: ["user"] });
     },
 
     /**
