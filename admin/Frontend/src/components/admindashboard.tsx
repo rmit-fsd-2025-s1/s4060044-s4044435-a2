@@ -1,5 +1,6 @@
-// components/admindashboard.tsx
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import AdminNavBar from "./AdminNavBar";
 
 // Dynamically import the subcomponents to avoid SSR issues if needed
 const CourseManager = dynamic(() => import("../components/CourseManager"));
@@ -17,7 +18,15 @@ export default function AdminDashboardComponent({
   editCourse,
   blockCandidate,
 }: AdminDashboardProps) {
+  const router = useRouter();
+
+  const handleReportClick = () => {
+    router.push("/AdminReports"); // 🔁 Navigate to report page
+  };
+
   return (
+    <>
+      <AdminNavBar />
       <div className="dashboard-container">
       <div className="dashboard-card">
         <div className="dashboard-header">
@@ -39,7 +48,15 @@ export default function AdminDashboardComponent({
           <h3 className="section-title">🚫 Candidate Control</h3>
           <CandidateManager />
         </div>
+        
+        <div className="dashboard-section">
+            <h3 className="section-title">📊 Reports</h3>
+            <button className="report-btn" onClick={handleReportClick}>
+              Go to Admin Report Section
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
