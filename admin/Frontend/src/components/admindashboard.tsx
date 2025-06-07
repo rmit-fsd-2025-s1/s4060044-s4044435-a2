@@ -13,11 +13,7 @@ interface AdminDashboardProps {
   blockCandidate: () => void;
 }
 
-export default function AdminDashboardComponent({
-  assignLecturer,
-  editCourse,
-  blockCandidate,
-}: AdminDashboardProps) {
+export default function AdminDashboardComponent({}: AdminDashboardProps) {
   const router = useRouter();
 
   const handleReportClick = () => {

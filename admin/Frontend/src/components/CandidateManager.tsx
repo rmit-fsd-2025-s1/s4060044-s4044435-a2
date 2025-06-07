@@ -1,5 +1,15 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 
+interface CandidateWithUser {
+  candidateId: number;
+  user: {
+    name: string;
+    email: string;
+    isBlocked: boolean;
+  };
+}
+
+
 const GET_CANDIDATES = gql`
   query {
     candidatesWithManySelections {
@@ -49,7 +59,7 @@ export default function CandidateManager() {
     <div className="course-container">
       <h3>Candidate Access Manager</h3>
       <ul className="course-list">
-        {data?.candidatesWithManySelections.map((c: any) => (
+        {data?.candidatesWithManySelections.map((c: CandidateWithUser) => (
           <li key={c.candidateId}>
             {c.user.name} ({c.user.email}) — {c.user.isBlocked ? "Blocked" : "Active"}
             <button

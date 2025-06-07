@@ -3,6 +3,23 @@ import AdminNavBar from "@/components/AdminNavBar";
 import ReportSection from "@/components/ReportSection";
 import { gql, useQuery } from "@apollo/client";
 
+// Define required interfaces to avoid 'any' usage
+interface User {
+  name: string;
+  email: string;
+}
+
+interface Candidate {
+  candidateId: number;
+  user: User;
+}
+
+interface CourseWithCandidates {
+  courseCode: string;
+  courseName: string;
+  candidates: Candidate[];
+}
+
 const GET_ADMIN_REPORTS = gql`
   query {
     chosenCandidatesPerCourse {
@@ -34,7 +51,11 @@ const GET_ADMIN_REPORTS = gql`
 `;
 
 export default function AdminReportsPage() {
-  const { data, loading, error } = useQuery(GET_ADMIN_REPORTS);
+  const { data, loading, error } = useQuery<{
+    chosenCandidatesPerCourse: CourseWithCandidates[];
+    candidatesChosenInMoreThanThreeCourses: Candidate[];
+    candidatesNotChosen: Candidate[];
+  }>(GET_ADMIN_REPORTS);
 
   return (
     <>
@@ -48,14 +69,14 @@ export default function AdminReportsPage() {
         {data && (
           <>
             <ReportSection title="✅ Candidates Chosen per Course">
-              {data.chosenCandidatesPerCourse.map((course: any) => (
+              {data.chosenCandidatesPerCourse.map((course) => (
                 <div key={course.courseCode}>
                   <strong>{course.courseCode} - {course.courseName}</strong>
                   {course.candidates.length === 0 ? (
                     <p>No candidates chosen.</p>
                   ) : (
                     <ul>
-                      {course.candidates.map((cand: any) => (
+                      {course.candidates.map((cand) => (
                         <li key={cand.candidateId}>
                           {cand.user.name} ({cand.user.email})
                         </li>
@@ -71,7 +92,7 @@ export default function AdminReportsPage() {
                 <p>No candidates found.</p>
               ) : (
                 <ul>
-                  {data.candidatesChosenInMoreThanThreeCourses.map((cand: any) => (
+                  {data.candidatesChosenInMoreThanThreeCourses.map((cand) => (
                     <li key={cand.candidateId}>
                       {cand.user.name} ({cand.user.email})
                     </li>
@@ -85,7 +106,7 @@ export default function AdminReportsPage() {
                 <p>All candidates have been selected in at least one course.</p>
               ) : (
                 <ul>
-                  {data.candidatesNotChosen.map((cand: any) => (
+                  {data.candidatesNotChosen.map((cand) => (
                     <li key={cand.candidateId}>
                       {cand.user.name} ({cand.user.email})
                     </li>

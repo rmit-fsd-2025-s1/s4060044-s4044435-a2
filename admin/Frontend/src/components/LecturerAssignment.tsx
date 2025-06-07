@@ -1,6 +1,19 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 
+interface Lecturer {
+  lecturerId: number;
+  user: {
+    name: string;
+  };
+}
+
+interface Course {
+  courseCode: string;
+  courseName: string;
+}
+
+
 const GET_COURSES = gql`
   query {
     allCourses {
@@ -59,7 +72,7 @@ export default function LecturerAssignment() {
         {loadingLecturers ? (
           <option disabled>Loading...</option>
         ) : (
-          lecturerData?.allLecturers.map((l: any) => (
+          lecturerData?.allLecturers.map((l: Lecturer) => (
             <option key={l.lecturerId} value={l.lecturerId}>
               {l.user.name}
             </option>
@@ -76,7 +89,7 @@ export default function LecturerAssignment() {
         {loadingCourses ? (
           <option disabled>Loading...</option>
         ) : (
-          courseData?.allCourses.map((c: any) => (
+          courseData?.allCourses.map((c: Course) => (
             <option key={c.courseCode} value={c.courseCode}>
               {c.courseCode} - {c.courseName}
             </option>

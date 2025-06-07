@@ -2,6 +2,12 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 // import "./course-manager.css";
 
+interface Course {
+  courseCode: string;
+  courseName: string;
+}
+
+
 const GET_COURSES = gql`
   query {
     allCourses {
@@ -70,7 +76,7 @@ export default function CourseManager() {
         <p>Loading...</p>
       ) : (
         <ul className="course-list">
-          {data?.allCourses.map((c: any) => (
+          {data?.allCourses.map((c: Course) => (
             <li key={c.courseCode}>
               {c.courseCode}: {c.courseName}
               <button className="course-delete" onClick={() => handleDelete(c.courseCode)}>

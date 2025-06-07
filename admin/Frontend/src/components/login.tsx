@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-
+import Image from "next/image";
 
 export default function LoginForm() {
 const personImg = "/images/bgo.png"
@@ -36,7 +36,7 @@ const personImg = "/images/bgo.png"
         <div className="illustration-section">
           <div className="illustration-content">
             <div className="person">
-                <img src = {personImg}  alt="A person coding" />
+                <Image src = {personImg}  alt="A person coding" width={300} height={300} />
             </div>
             <h2 className="title">TeachTeam Admin Page</h2>
             <p className="subtitle">
