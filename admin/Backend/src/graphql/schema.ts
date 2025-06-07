@@ -74,6 +74,11 @@ export const typeDefs = gql`
     selected: Boolean!
   }
 
+  type CourseCandidateReport {
+    course: Course!
+    candidates: [Candidate!]!
+  }
+
   type Query {
     """
     Fetch all available courses.
@@ -99,6 +104,11 @@ export const typeDefs = gql`
     Get candidates who haven't been selected/applied in any course.
     """
     candidatesWithNoSelections: [Candidate!]!
+
+    # Admin report queries
+    selectedCandidatesPerCourse: [CourseCandidateReport!]!
+    overSelectedCandidates: [Candidate!]!
+    unselectedCandidates: [Candidate!]!
   }
 
   type Mutation {

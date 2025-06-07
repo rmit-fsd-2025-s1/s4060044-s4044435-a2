@@ -94,6 +94,66 @@ export const resolvers = {
 
       // Return only those not in the selected set
       return allCandidates.filter(c => !selectedCandidateIds.has(c.candidateId));
+    },
+
+    /**
+     * Admin report: List of selected candidates per course
+     */
+    selectedCandidatesPerCourse: async () => {
+      const courses = await courseRepo.find();
+      const result = [];
+
+      for (const course of courses) {
+        const selectedApplications = await appRepo.find({
+          where: {
+            course: { courseCode: course.courseCode }
+          },
+          relations: ["candidate", "candidate.user", "course"]
+        });
+
+        const candidates = selectedApplications.map(app => app.candidate);
+        result.push({ course, candidates });
+      }
+
+      return result;
+    },
+
+    /**
+     * Admin report: Candidates selected for more than 3 courses
+     */
+    overSelectedCandidates: async () => {
+      const applications = await appRepo.find({ relations: ["candidate"] });
+      const counts = new Map<number, number>();
+
+      for (const app of applications) {
+        const id = app.candidate?.candidateId;
+        if (id) {
+          counts.set(id, (counts.get(id) || 0) + 1);
+        }
+      }
+
+      const ids = Array.from(counts.entries())
+        .filter(([_, count]) => count > 3)
+        .map(([id]) => id);
+
+      return await candidateRepo.find({
+        where: ids.map(id => ({ candidateId: id })),
+        relations: ["user"]
+      });
+    },
+
+    /**
+     * Admin report: Candidates not selected in any course
+     */
+    unselectedCandidates: async () => {
+      const allCandidates = await candidateRepo.find({ relations: ["user"] });
+      const applications = await appRepo.find({ relations: ["candidate"] });
+
+      const selectedIds = new Set(
+        applications.map(app => app.candidate?.candidateId)
+      );
+
+      return allCandidates.filter(c => !selectedIds.has(c.candidateId));
     }
   },
 
