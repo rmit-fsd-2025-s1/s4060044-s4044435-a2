@@ -8,7 +8,7 @@ export default function AdminNavBar() {
   const handleLogout = () => {
     sessionStorage.removeItem("adminAuth");
     alert("Logged out.");
-    router.push("/login");
+    router.push("/loginForm");
   };
 
   return (
@@ -17,13 +17,10 @@ export default function AdminNavBar() {
         <span className="admin-navbar-brand">Admin Dashboard</span>
         <ul className="admin-navbar-links">
           <li>
-            <Link href="/admin-dashboard">Home</Link>
-          </li>
-          <li>
             <Link href="/AdminReport">Report Section</Link>
           </li>
           <li>
-            <Link href="/view-lecturer-courses">Lecturer Courses</Link>
+            <Link href="/admindashboard">Admin Dashboard</Link>
           </li>
           <li>
             <button onClick={handleLogout} className="admin-logout-btn">
