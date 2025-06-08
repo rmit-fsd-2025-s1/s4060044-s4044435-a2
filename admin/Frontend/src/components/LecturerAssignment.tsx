@@ -1,6 +1,8 @@
+// Import GraphQL and React hooks
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 
+// Define the shape of a Lecturer object
 interface Lecturer {
   lecturerId: number;
   user: {
@@ -8,12 +10,13 @@ interface Lecturer {
   };
 }
 
+// Define the shape of a Course
 interface Course {
   courseCode: string;
   courseName: string;
 }
 
-
+// GraphQL query to get all courses
 const GET_COURSES = gql`
   query {
     allCourses {
@@ -34,6 +37,7 @@ const GET_LECTURERS = gql`
   }
 `;
 
+// GraphQL mutation to assign a lecturer to a course
 const ASSIGN_LECTURER = gql`
   mutation($lecturerId: ID!, $courseCode: String!) {
     assignLecturerToCourse(lecturerId: $lecturerId, courseCode: $courseCode) {
@@ -42,7 +46,10 @@ const ASSIGN_LECTURER = gql`
   }
 `;
 
+// Component for assigning lecturers to courses
 export default function LecturerAssignment() {
+    // Fetch courses using Apollo useQuery hook
+
   const { data: courseData, loading: loadingCourses } = useQuery(GET_COURSES);
   const { data: lecturerData, loading: loadingLecturers } = useQuery(GET_LECTURERS);
   const [assignLecturer] = useMutation(ASSIGN_LECTURER);
@@ -50,10 +57,13 @@ export default function LecturerAssignment() {
   const [selectedLecturer, setSelectedLecturer] = useState("");
   const [selectedCourse, setSelectedCourse] = useState("");
 
-  const handleAssign = async () => {
+  const handleAssign = async () => {  // Handler function to perform assignment
+
     if (selectedLecturer && selectedCourse) {
-      await assignLecturer({ variables: { lecturerId: selectedLecturer, courseCode: selectedCourse } });
+      await assignLecturer({ variables: { lecturerId: selectedLecturer, courseCode: selectedCourse } });      // Execute mutation with selected values
+
       alert("Lecturer successfully assigned to course.");
+      
       setSelectedLecturer("");
       setSelectedCourse("");
     }

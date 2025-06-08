@@ -1,12 +1,14 @@
+// Import required hooks
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 // import "./course-manager.css";
 
-interface Course {
+interface Course { // Define the structure of a course
   courseCode: string;
   courseName: string;
 }
 
+// GraphQL query to get all courses
 
 const GET_COURSES = gql`
   query {
@@ -32,9 +34,12 @@ const DELETE_COURSE = gql`
   }
 `;
 
-export default function CourseManager() {
-  const { data, loading, refetch } = useQuery(GET_COURSES);
-  const [addCourse] = useMutation(ADD_COURSE);
+export default function CourseManager() {// React component for managing courses
+
+  const { data, loading, refetch } = useQuery(GET_COURSES);  // Fetch course data from the backend
+  // Setup mutation hooks for adding and deleting courses
+  const [addCourse] = useMutation(ADD_COURSE);  // Add a new course
+
   const [deleteCourse] = useMutation(DELETE_COURSE);
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
@@ -42,12 +47,14 @@ export default function CourseManager() {
   const handleAdd = async () => {
     if (code && name) {
       await addCourse({ variables: { courseCode: code, courseName: name } });
-      setCode("");
+      setCode("");// Clear input fields
+
       setName("");
-      refetch();
+      refetch();// Refresh the course list
     }
   };
 
+    // Delete a course by its course code
   const handleDelete = async (courseCode: string) => {
     await deleteCourse({ variables: { courseCode } });
     refetch();

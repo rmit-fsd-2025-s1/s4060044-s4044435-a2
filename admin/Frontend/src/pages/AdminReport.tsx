@@ -1,6 +1,5 @@
 import AdminNavBar from "@/components/AdminNavBar";
 import { gql, useQuery } from "@apollo/client";
-// import "../styles/admin-reports.css"; // ✅ link to your matching CSS file
 
 // Interfaces
 interface User {
@@ -24,6 +23,10 @@ interface CourseWithChosenCandidates {
 }
 
 // GraphQL Query
+// 1. Candidates selected per course
+// 2. Candidates selected in more than 3 courses
+// 3. Candidates not selected for any course
+
 const GET_SELECTED_REPORTS = gql`
   query {
     selectedCandidatesPerCourse {

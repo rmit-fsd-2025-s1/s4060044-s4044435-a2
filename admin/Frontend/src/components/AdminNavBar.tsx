@@ -1,10 +1,13 @@
+// Import Link component for navigation
+
 import Link from "next/link";
 import { useRouter } from "next/router";
-//import "../styles/AdminNavBar.css"; // ✅ Make sure CSS is loaded
 
-export default function AdminNavBar() {
+export default function AdminNavBar() { // This component shows the top navigation bar for the admin
+
   const router = useRouter();
 
+  // Function to handle admin logout
   const handleLogout = () => {
     sessionStorage.removeItem("adminAuth");
     alert("Logged out.");

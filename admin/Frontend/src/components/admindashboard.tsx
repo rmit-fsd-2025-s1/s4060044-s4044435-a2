@@ -2,10 +2,12 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import AdminNavBar from "./AdminNavBar";
 
-// Dynamically import the subcomponents to avoid SSR issues if needed
+// Load components for managing courses, lecturers, and candidates
 const CourseManager = dynamic(() => import("../components/CourseManager"));
 const LecturerAssignment = dynamic(() => import("../components/LecturerAssignment"));
 const CandidateManager = dynamic(() => import("../components/CandidateManager"));
+
+// Define the props for this component 
 
 interface AdminDashboardProps {
   assignLecturer: () => void;
@@ -13,9 +15,11 @@ interface AdminDashboardProps {
   blockCandidate: () => void;
 }
 
+// Admin Dashboard component
+
 export default function AdminDashboardComponent({}: AdminDashboardProps) {
   const router = useRouter();
-
+//  reports page when called
   const handleReportClick = () => {
     router.push("/AdminReports"); // 🔁 Navigate to report page
   };
