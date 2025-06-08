@@ -1,5 +1,4 @@
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import AdminNavBar from "./AdminNavBar";
 
 // Load components for managing courses, lecturers, and candidates
@@ -7,7 +6,7 @@ const CourseManager = dynamic(() => import("../components/CourseManager"));
 const LecturerAssignment = dynamic(() => import("../components/LecturerAssignment"));
 const CandidateManager = dynamic(() => import("../components/CandidateManager"));
 
-// Define the props for this component 
+// Define the props for this component
 
 interface AdminDashboardProps {
   assignLecturer: () => void;
@@ -18,11 +17,8 @@ interface AdminDashboardProps {
 // Admin Dashboard component
 
 export default function AdminDashboardComponent({}: AdminDashboardProps) {
-  const router = useRouter();
-//  reports page when called
-  const handleReportClick = () => {
-    router.push("/AdminReports"); // 🔁 Navigate to report page
-  };
+
+
 
   return (
     <>
