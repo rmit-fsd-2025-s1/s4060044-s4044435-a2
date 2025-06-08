@@ -44,13 +44,6 @@ export default function AdminDashboardComponent({}: AdminDashboardProps) {
           <h3 className="section-title">🚫 Candidate Control</h3>
           <CandidateManager />
         </div>
-        
-        <div className="dashboard-section">
-            <h3 className="section-title">📊 Reports</h3>
-            <button className="report-btn" onClick={handleReportClick}>
-              Go to Admin Report Section
-            </button>
-          </div>
         </div>
       </div>
     </>
