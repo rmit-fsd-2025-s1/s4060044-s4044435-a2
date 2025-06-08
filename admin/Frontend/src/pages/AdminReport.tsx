@@ -1,5 +1,7 @@
 import AdminNavBar from "@/components/AdminNavBar";
 import { gql, useQuery } from "@apollo/client";
+import router from "next/router";
+import { useEffect } from "react";
 // import "../styles/admin-reports.css"; // ✅ link to your matching CSS file
 
 // Interfaces
@@ -57,7 +59,16 @@ const GET_SELECTED_REPORTS = gql`
     }
   }
 `;
+
+  
 export default function AdminReportsPage() {
+   useEffect(() => {
+    const isAdmin = sessionStorage.getItem("adminAuth") === "true";
+    if (!isAdmin) {
+      alert("Unauthorized. Redirecting to login.");
+      router.push("/login");
+    }
+  }, [])
   const { data, loading, error } = useQuery<{
     selectedCandidatesPerCourse: CourseWithChosenCandidates[];
     overSelectedCandidates: Candidate[];

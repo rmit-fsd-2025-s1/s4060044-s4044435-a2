@@ -1,5 +1,4 @@
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import AdminNavBar from "./AdminNavBar";
 
 // Dynamically import the subcomponents to avoid SSR issues if needed
@@ -14,12 +13,6 @@ interface AdminDashboardProps {
 }
 
 export default function AdminDashboardComponent({}: AdminDashboardProps) {
-  const router = useRouter();
-
-  const handleReportClick = () => {
-    router.push("/AdminReports"); // 🔁 Navigate to report page
-  };
-
   return (
     <>
       <AdminNavBar />
