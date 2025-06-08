@@ -1,11 +1,9 @@
-// src/__tests__/blockCandidate.test.ts
-
-import { gql } from "graphql-tag";
-import { createMockServer } from "../utils/test-sercver";
-import { AppDataSource } from "../data-source";
 import { ApolloServer } from "@apollo/server";
-import { User } from "../entity/User";
+import { gql } from "graphql-tag";
+import { AppDataSource } from "../data-source";
 import { Candidate } from "../entity/Candidate";
+import { User } from "../entity/User";
+import { createMockServer } from "../utils/test-sercver";
 
 /**
  * UNIT TEST: Block Candidate
@@ -26,6 +24,7 @@ import { Candidate } from "../entity/Candidate";
 describe("Block Candidate", () => {
   let server: ApolloServer;
   let candidateId: number;
+  let candidateEmail: string;
 
   // GraphQL mutation template
   const getBlockCandidateMutation = (id: number) => gql`
@@ -48,9 +47,10 @@ describe("Block Candidate", () => {
     const candidateRepo = AppDataSource.getRepository(Candidate);
 
     // Create a user with candidate role
+    candidateEmail = `jane${Date.now()}@test.com`; // prevent unique email clashes
     const user = userRepo.create({
       name: "Jane Doe",
-      email: `jane${Date.now()}@test.com`, // prevent unique email clashes
+      email: candidateEmail,
       password: "test123",
       role: "candidate",
       joinedAt: new Date().toISOString(),
@@ -66,6 +66,13 @@ describe("Block Candidate", () => {
 
   // Cleanup after test
   afterAll(async () => {
+    const userRepo = AppDataSource.getRepository(User);
+    const candidateRepo = AppDataSource.getRepository(Candidate);
+
+    // Delete candidate and related user
+    await candidateRepo.delete({ candidateId });
+    await userRepo.delete({ email: candidateEmail });
+
     await server.stop();
     await AppDataSource.destroy();
   });

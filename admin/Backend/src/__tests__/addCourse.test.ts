@@ -1,7 +1,8 @@
+import { ApolloServer } from "@apollo/server"; //  Apollo Server v4 import
 import { gql } from "graphql-tag";
+import { AppDataSource } from "../data-source"; //  TypeORM data source config
+import { Course } from "../entity/Course"; //  Import Course entity
 import { createMockServer } from "../utils/test-sercver"; //  Utility to spin up an isolated Apollo Server for tests
-import { AppDataSource } from "../data-source";           //  TypeORM data source config
-import { ApolloServer } from "@apollo/server";            //  Apollo Server v4 import
 
 /**
  * UNIT TEST: Add Course (Admin Functionality - HD Requirement)
@@ -54,6 +55,7 @@ describe("Add Course", () => {
    * 1. Sends `addCourse` mutation to create a new course
    * 2. Receives response from Apollo
    * 3. Verifies the returned courseCode and courseName are exactly as expected
+   * 4. Removes the inserted test course to maintain DB cleanliness
    */
   it("should add a course and return correct fields", async () => {
     const res = await server.executeOperation({ query: ADD_COURSE });
@@ -66,5 +68,9 @@ describe("Add Course", () => {
 
     // Validation: Ensure the mutation returns the correct courseName
     expect(data?.addCourse.courseName).toBe("Cloud Computing");
+
+    // Cleanup: Delete the inserted course from the test database
+    const courseRepo = AppDataSource.getRepository(Course);
+    await courseRepo.delete({ courseCode: "COSC3001" });
   });
 });

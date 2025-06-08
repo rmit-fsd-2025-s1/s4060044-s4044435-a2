@@ -1,12 +1,13 @@
 // src/__tests__/assignLecturer.test.ts
 
-import { gql } from "graphql-tag";
-import { createMockServer } from "../utils/test-sercver";
-import { AppDataSource } from "../data-source";
 import { ApolloServer } from "@apollo/server";
-import { User } from "../entity/User";
-import { Lecturer } from "../entity/Lecturer";
+import { gql } from "graphql-tag";
+import { AppDataSource } from "../data-source";
 import { Course } from "../entity/Course";
+import { Lecturer } from "../entity/Lecturer";
+import { LecturerCourse } from "../entity/LecturerCourse";
+import { User } from "../entity/User";
+import { createMockServer } from "../utils/test-sercver";
 
 /**
  * UNIT TEST: Assign Lecturer to Course
@@ -23,6 +24,7 @@ import { Course } from "../entity/Course";
 describe("Assign Lecturer", () => {
   let server: ApolloServer;
   let lecturerId: number; // Will store the lecturer ID after creation
+  let userEmail: string;
 
   /**
    * Helper function to construct the GraphQL mutation dynamically,
@@ -52,9 +54,13 @@ describe("Assign Lecturer", () => {
     const courseRepo = AppDataSource.getRepository(Course);
 
     // Create a unique user to prevent email conflicts during repeated test runs
+
+
+    userEmail = `eminem${Date.now()}@rmit.edu.au`;
+
     const user = userRepo.create({
       name: "Dr. Eminem",
-      email: `eminem${Date.now()}@rmit.edu.au`,
+      email: userEmail,
       password: "test123",
       role: "lecturer",
       joinedAt: new Date().toISOString(),
@@ -77,6 +83,23 @@ describe("Assign Lecturer", () => {
 
   // Clean up resources after tests complete
   afterAll(async () => {
+    const userRepo = AppDataSource.getRepository(User);
+    const lecturerRepo = AppDataSource.getRepository(Lecturer);
+    const courseRepo = AppDataSource.getRepository(Course);
+    const lecturerCourseRepo = AppDataSource.getRepository(LecturerCourse);
+
+    // Remove lecturer-course link
+    await lecturerCourseRepo.delete({ course: { courseCode: "COSC3001" } });
+
+    // Remove course
+    await courseRepo.delete({ courseCode: "COSC3001" });
+
+    // Remove lecturer
+    await lecturerRepo.delete({ lecturerId });
+
+    // Remove user by unique email
+    await userRepo.delete({ email: userEmail });
+
     await server.stop();
     await AppDataSource.destroy();
   });
