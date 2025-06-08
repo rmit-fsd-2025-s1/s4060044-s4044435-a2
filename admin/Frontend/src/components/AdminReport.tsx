@@ -57,7 +57,6 @@ const GET_SELECTED_REPORTS = gql`
     }
   }
 `;
-
 export default function AdminReportsPage() {
   const { data, loading, error } = useQuery<{
     selectedCandidatesPerCourse: CourseWithChosenCandidates[];
@@ -66,8 +65,7 @@ export default function AdminReportsPage() {
   }>(GET_SELECTED_REPORTS);
 
   return (
-    <>
-      <AdminNavBar />
+    <><AdminNavBar></AdminNavBar>
       <div className="admin-reports-container">
         <div className="admin-reports-card">
           <h2 className="admin-reports-title">📊 Admin Reports (Based on Lecturer Selections)</h2>

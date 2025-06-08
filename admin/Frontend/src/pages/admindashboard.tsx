@@ -20,10 +20,10 @@ export default function AdminDashboardPage() {
   };
 
   React.useEffect(() => {
-    const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
-    if (!isAdmin) {
-      alert('Unauthorized. Redirecting to login.');
-      router.push('/login');
+   const isAuthenticated = sessionStorage.getItem("adminAuth");
+    if (isAuthenticated !== "true") {
+      alert("Not authenticated")
+      router.push("/loginForm");
     }
   }, [router]);
 
