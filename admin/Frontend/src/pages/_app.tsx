@@ -2,6 +2,7 @@ import "@/styles/admindashboard.css";
 import "@/styles/AdminNavBar.css";
 import "@/styles/course-manager.css";
 import "@/styles/globals.css";
+import "@/styles/admin-reports.css";
 
 import "@/styles/lecturer-assignment.css";
 import "@/styles/Login.css";

@@ -1,9 +1,8 @@
-// pages/AdminReports.tsx
 import AdminNavBar from "@/components/AdminNavBar";
-import ReportSection from "@/components/ReportSection";
 import { gql, useQuery } from "@apollo/client";
+// import "../styles/admin-reports.css"; // ✅ link to your matching CSS file
 
-// Define required interfaces to avoid 'any' usage
+// Interfaces
 interface User {
   name: string;
   email: string;
@@ -14,17 +13,24 @@ interface Candidate {
   user: User;
 }
 
-interface CourseWithCandidates {
+interface Course {
   courseCode: string;
   courseName: string;
+}
+
+interface CourseWithChosenCandidates {
+  course: Course;
   candidates: Candidate[];
 }
 
-const GET_ADMIN_REPORTS = gql`
+// GraphQL Query
+const GET_SELECTED_REPORTS = gql`
   query {
-    chosenCandidatesPerCourse {
-      courseCode
-      courseName
+    selectedCandidatesPerCourse {
+      course {
+        courseCode
+        courseName
+      }
       candidates {
         candidateId
         user {
@@ -33,14 +39,16 @@ const GET_ADMIN_REPORTS = gql`
         }
       }
     }
-    candidatesChosenInMoreThanThreeCourses {
+
+    overSelectedCandidates {
       candidateId
       user {
         name
         email
       }
     }
-    candidatesNotChosen {
+
+    unselectedCandidates {
       candidateId
       user {
         name
@@ -52,70 +60,80 @@ const GET_ADMIN_REPORTS = gql`
 
 export default function AdminReportsPage() {
   const { data, loading, error } = useQuery<{
-    chosenCandidatesPerCourse: CourseWithCandidates[];
-    candidatesChosenInMoreThanThreeCourses: Candidate[];
-    candidatesNotChosen: Candidate[];
-  }>(GET_ADMIN_REPORTS);
+    selectedCandidatesPerCourse: CourseWithChosenCandidates[];
+    overSelectedCandidates: Candidate[];
+    unselectedCandidates: Candidate[];
+  }>(GET_SELECTED_REPORTS);
 
   return (
     <>
       <AdminNavBar />
-      <div style={{ padding: "40px" }}>
-        <h2>📊 Admin Reports</h2>
+      <div className="admin-reports-container">
+        <div className="admin-reports-card">
+          <h2 className="admin-reports-title">📊 Admin Reports (Based on Lecturer Selections)</h2>
 
-        {loading && <p>Loading reports...</p>}
-        {error && <p>Error loading reports: {error.message}</p>}
+          {loading && <p>Loading reports...</p>}
+          {error && <p>Error loading reports: {error.message}</p>}
 
-        {data && (
-          <>
-            <ReportSection title="✅ Candidates Chosen per Course">
-              {data.chosenCandidatesPerCourse.map((course) => (
-                <div key={course.courseCode}>
-                  <strong>{course.courseCode} - {course.courseName}</strong>
-                  {course.candidates.length === 0 ? (
-                    <p>No candidates chosen.</p>
-                  ) : (
-                    <ul>
-                      {course.candidates.map((cand) => (
-                        <li key={cand.candidateId}>
-                          {cand.user.name} ({cand.user.email})
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
-            </ReportSection>
+          {data && (
+            <>
+              {/* Report 1 */}
+              <div className="report-block">
+                <h3>✅ Candidates Chosen per Course</h3>
+                {data.selectedCandidatesPerCourse.map((entry) => (
+                  <div key={entry.course.courseCode} style={{ marginBottom: "15px" }}>
+                    <strong>
+                      {entry.course.courseCode} - {entry.course.courseName}
+                    </strong>
+                    {entry.candidates.length === 0 ? (
+                      <p>No candidates selected.</p>
+                    ) : (
+                      <ul>
+                        {entry.candidates.map((cand) => (
+                          <li key={cand.candidateId}>
+                            {cand.user.name} ({cand.user.email})
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
 
-            <ReportSection title="⚠️ Candidates Chosen in More Than 3 Courses">
-              {data.candidatesChosenInMoreThanThreeCourses.length === 0 ? (
-                <p>No candidates found.</p>
-              ) : (
-                <ul>
-                  {data.candidatesChosenInMoreThanThreeCourses.map((cand) => (
-                    <li key={cand.candidateId}>
-                      {cand.user.name} ({cand.user.email})
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </ReportSection>
+              {/* Report 2 */}
+              <div className="report-block">
+                <h3>⚠️ Candidates Selected in More Than 3 Courses</h3>
+                {data.overSelectedCandidates.length === 0 ? (
+                  <p>No candidates selected in more than 3 courses.</p>
+                ) : (
+                  <ul>
+                    {data.overSelectedCandidates.map((cand) => (
+                      <li key={cand.candidateId}>
+                        {cand.user.name} ({cand.user.email})
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
-            <ReportSection title="❌ Candidates Not Chosen in Any Course">
-              {data.candidatesNotChosen.length === 0 ? (
-                <p>All candidates have been selected in at least one course.</p>
-              ) : (
-                <ul>
-                  {data.candidatesNotChosen.map((cand) => (
-                    <li key={cand.candidateId}>
-                      {cand.user.name} ({cand.user.email})
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </ReportSection>
-          </>
-        )}
+              {/* Report 3 */}
+              <div className="report-block">
+                <h3>❌ Candidates Not Selected for Any Course</h3>
+                {data.unselectedCandidates.length === 0 ? (
+                  <p>All candidates have been selected in at least one course.</p>
+                ) : (
+                  <ul>
+                    {data.unselectedCandidates.map((cand) => (
+                      <li key={cand.candidateId}>
+                        {cand.user.name} ({cand.user.email})
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </>
   );

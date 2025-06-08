@@ -1,9 +1,10 @@
 import { AppDataSource } from "../data-source";
-import { Course } from "../entity/Course";
-import { Candidate } from "../entity/Candidate";
 import { Application } from "../entity/Application";
-import { LecturerCourse } from "../entity/LecturerCourse";
+import { Candidate } from "../entity/Candidate";
+import { Comment } from "../entity/Comment";
+import { Course } from "../entity/Course";
 import { Lecturer } from "../entity/Lecturer";
+import { LecturerCourse } from "../entity/LecturerCourse";
 import { User } from "../entity/User";
 
 // Repository instances to interact with the database
@@ -13,6 +14,7 @@ const appRepo = AppDataSource.getRepository(Application);
 const lecturerRepo = AppDataSource.getRepository(Lecturer);
 const lecturerCourseRepo = AppDataSource.getRepository(LecturerCourse);
 const userRepo = AppDataSource.getRepository(User);
+const commentRepo = AppDataSource.getRepository(Comment);
 
 export const resolvers = {
   Query: {
@@ -104,14 +106,15 @@ export const resolvers = {
       const result = [];
 
       for (const course of courses) {
-        const selectedApplications = await appRepo.find({
+        const selectedComments = await commentRepo.find({
           where: {
-            course: { courseCode: course.courseCode }
+            course: { courseCode: course.courseCode },
+            selected: true
           },
           relations: ["candidate", "candidate.user", "course"]
         });
 
-        const candidates = selectedApplications.map(app => app.candidate);
+        const candidates = selectedComments.map(comment => comment.candidate);
         result.push({ course, candidates });
       }
 
@@ -122,22 +125,31 @@ export const resolvers = {
      * Admin report: Candidates selected for more than 3 courses
      */
     overSelectedCandidates: async () => {
-      const applications = await appRepo.find({ relations: ["candidate"] });
-      const counts = new Map<number, number>();
+      const selectedComments = await commentRepo.find({
+        where: { selected: true },
+        relations: ["candidate", "candidate.user", "course"]
+      });
 
-      for (const app of applications) {
-        const id = app.candidate?.candidateId;
-        if (id) {
-          counts.set(id, (counts.get(id) || 0) + 1);
+      const candidateCourseMap = new Map<number, Set<string>>();
+
+      for (const comment of selectedComments) {
+        const candidateId = comment.candidate?.candidateId;
+        const courseCode = comment.course?.courseCode;
+
+        if (candidateId && courseCode) {
+          if (!candidateCourseMap.has(candidateId)) {
+            candidateCourseMap.set(candidateId, new Set());
+          }
+          candidateCourseMap.get(candidateId)!.add(courseCode);
         }
       }
 
-      const ids = Array.from(counts.entries())
-        .filter(([_, count]) => count > 3)
-        .map(([id]) => id);
+      const qualifiedCandidateIds = Array.from(candidateCourseMap.entries())
+        .filter(([_, courseSet]) => courseSet.size > 3)
+        .map(([candidateId]) => candidateId);
 
       return await candidateRepo.find({
-        where: ids.map(id => ({ candidateId: id })),
+        where: qualifiedCandidateIds.map(id => ({ candidateId: id })),
         relations: ["user"]
       });
     },
@@ -147,12 +159,12 @@ export const resolvers = {
      */
     unselectedCandidates: async () => {
       const allCandidates = await candidateRepo.find({ relations: ["user"] });
-      const applications = await appRepo.find({ relations: ["candidate"] });
+      const selected = await commentRepo.find({
+        where: { selected: true },
+        relations: ["candidate"]
+      });
 
-      const selectedIds = new Set(
-        applications.map(app => app.candidate?.candidateId)
-      );
-
+      const selectedIds = new Set(selected.map(c => c.candidate?.candidateId));
       return allCandidates.filter(c => !selectedIds.has(c.candidateId));
     }
   },
